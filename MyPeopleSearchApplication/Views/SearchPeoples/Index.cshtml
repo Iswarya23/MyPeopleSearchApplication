@@ -1,0 +1,46 @@
+﻿ @model IEnumerable<MyPeopleSearchApplication.Models.SearchPeople>
+
+@{
+    ViewBag.Title = "Search";
+}
+
+<h2>Search</h2>
+
+@using (Ajax.BeginForm("Index", "SearchPeoples", new AjaxOptions()
+{
+    HttpMethod = "POST",
+    AllowCache = false,
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "peoplelist",
+    OnSuccess = "onSuccess"
+}))
+{
+    string searchQuery = "";
+    @Html.EditorFor(x => searchQuery)
+    <input type="submit" value="Search" />
+}
+<script type="text/javascript">
+    var onSuccess = function (data) {
+        if (data) {
+            var builtHtml = '';
+            $.each(data, function (key, value) {
+                builtHtml += '<tr><td>' + value.FirstName +
+                             '</td><td>' + value.LastName +
+                             '</td><td>' + value.Occupation +
+                             '</td><td>' + value.City +
+                             '</td><td>' + value.State +
+                             '</td><td>' + value.Country +
+                             '</td><td>' + value.Age +
+                             '</td><td>' + value.Gender +
+                             '</td><td>' + value.Interest +
+                             '</td></tr>';
+            });
+            $("#peoplelist").html(builtHtml);
+        }
+    };
+</script>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@{Html.RenderPartial("PeopleList", Model);}
